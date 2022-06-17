@@ -1,0 +1,34 @@
+domain:
+  addresses: [] # ["8.8.8.8", "1.1.1.1"]
+  search:    [] # [digile.local]
+time:
+  service: # systemd-timesyncd
+  server:  # time.google.com
+
+swapoff: on
+
+disable_apt_update: false
+apt_update_cache: no
+
+apt_repos: {}
+#  "/etc/apt/sources.list":
+#   - uri: http://archive.ubuntu.com/ubuntu/
+#     distribution: focal
+#     components: [main, restricted, universe, multiverse]
+#   - uri: http://archive.ubuntu.com/ubuntu/
+#     distribution: focal-updates
+#     components: [main, restricted, universe, multiverse]
+#   - uri: http://archive.ubuntu.com/ubuntu/
+#     distribution: focal-backports
+#     components: [main, restricted, universe, multiverse]
+#   - uri: http://security.ubuntu.com/ubuntu
+#     distribution: focal-security
+#     components: [main, restricted, universe, multiverse]
+#   "/etc/apt/sources.list.d/partner.list":
+#   - uri: http://archive.canonical.com/ubuntu
+#     distribution: focal
+#     components: [partner]
+apt_packages: []
+# - git
+# - vim
+# - socat

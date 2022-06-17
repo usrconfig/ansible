@@ -1,0 +1,11 @@
+---
+- hosts: nodes
+  roles:
+  - role: common
+    vars:
+      apt_update_cache: true
+      apt_packages:
+      - vim
+      - nload
+      - net-tools
+      - sysstat

@@ -1,0 +1,16 @@
+---
+- name: disable swap space
+  shell: swapoff -a
+  when: swapoff | bool
+
+- name: restart domain service
+  listen: restart_domain
+  systemd:
+    name:  systemd-resolved.service
+    state: restarted
+
+- name: restart time service
+  listen: restart_time
+  systemd:
+    name:  "{{time.service}}"
+    state: restarted

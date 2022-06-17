@@ -1,0 +1,23 @@
+---
+- name: apt | Config apt repos
+  copy:
+    dest: "{{item.key}}"
+    content: |
+      {% for repo in item.value %}
+        deb {{ repo.uri }} {{ repo.distribution }} {{ repo.components | join(' ') }}
+      {% endfor %}
+  loop: "{{apt_repos | dict2items}}"
+  loop_control:
+    label: "{{item.key}}"
+
+- name: Update apt packages
+  become: true
+  apt:
+    update_cache: "{{ apt_update_cache | bool }}"
+
+- name: apt | Install packages
+  apt:
+    pkg: "{{apt_packages}}"
+    dpkg_options: force-downgrade
+    state: present
+    force: yes

@@ -1,0 +1,28 @@
+---
+- name: setup basic configurations
+  import_tasks: base.yml
+  tags: base
+
+- name: tunning modules values
+  import_tasks: modules.yml
+  tags: modules
+
+- include_tasks: domain.yml
+  when: domain.addresses | length > 0
+
+- name: config apt
+  import_tasks: apt.yml
+  tags: apt
+
+- name: tunning sysctl values
+  import_tasks: sysctl.yml
+  tags: sysctl
+
+
+- name: tunning ulimit values
+  import_tasks: ulimit.yml
+  tags: ulimit
+
+- name: Reboot reminder
+  debug:
+    msg: ">> NOTICE: reboot is required for some settings to be effected (selinux, update 1st..)"

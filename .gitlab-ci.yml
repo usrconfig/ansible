@@ -1,0 +1,44 @@
+stages:
+- validate
+- apply
+
+
+dev:plan:
+  stage: validate
+  image: <your-ansible-image>
+  allow_failure: true
+  variables:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_CONFIG: ./ansible.cfg
+  before_script:
+  - eval "$(ssh-agent -s)"
+  - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+  - cd ansible/
+  script:
+  - ansible-playbook playbook.yaml -i inventory.toml --check --diff
+  rules:
+    - changes:
+      - ansible/playbook.yaml
+      - ansible/inventory.toml
+      - ansible/roles/**/*
+
+dev:apply:
+  stage: apply
+  image: <your-ansible-image>
+  variables:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_CONFIG: ./ansible.cfg
+  before_script:
+  - eval "$(ssh-agent -s)"
+  - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+  - cd ansible/
+  script:
+  - ansible-playbook playbook.yaml -i inventory.toml
+  only:
+    refs:
+      - master
+    changes:
+      - ansible/playbook.yaml
+      - ansible/inventory.toml
+      - ansible/roles/**/*
+

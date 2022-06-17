@@ -1,0 +1,41 @@
+---
+- name: hostname | Update /etc/hosts
+  lineinfile:
+    path:    /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line:   '127.0.1.1	{{inventory_hostname}}'
+    insertafter:  '^127\.0\.0\.1'
+
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Disable swapoff permanently
+  replace:
+    path: /etc/fstab
+    regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+    replace: '#\1\2\3swap\4'
+    backup: yes
+  when: swapoff | bool
+
+- name: Stop services
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+    - apt-daily.timer
+    - apt-daily-upgrade.timer
+  when: disable_apt_update
+  tags:
+    - apt
+
+- name: Disable services
+  service:
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - apt-daily.timer
+    - apt-daily-upgrade.timer
+  when: disable_apt_update
+  tags:
+    - apt

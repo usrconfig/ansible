@@ -1,0 +1,6 @@
+[all:vars]
+ansible_user=usrconfig
+ansible_port=22
+
+[nodes]
+tiny              ansible_host=35.197.151.50

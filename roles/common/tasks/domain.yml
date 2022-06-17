@@ -1,0 +1,19 @@
+---
+- name: domain | Config /etc/systemd/resolved.conf
+  ini_file:
+    path:    /etc/systemd/resolved.conf
+    section: Resolve
+    option:  "{{item.key}}"
+    value:   "{{item.value}}"
+  notify: restart_domain
+  with_dict:
+    DNS:     "{{domain.addresses | join(' ')}}"
+    Domains: "{{domain.search | default(omit) | join(' ')}}"
+
+- name: domain | Config systemd-resolved.service
+  systemd:
+    name: systemd-resolved.service
+    state: started
+    enabled: yes
+# To force handlers that have been notified at a specific point within a playbook
+- meta: flush_handlers
